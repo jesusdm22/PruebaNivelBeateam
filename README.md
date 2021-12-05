@@ -1,27 +1,32 @@
-# TestCandidatura
+# Test Candidatura BEATEAM
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.4.
+· This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 13.0.4.
+· Acceder al directorio del proyecto y ejecutar 'ng serve'. Al final de la compilación podremos acceder a la aplicación navegando a 'localhost:4200'.
+· El token de acceso se encuentra encriptado en el servicio 'api.service.ts'.
+· La URL de la API se encuentra en el archivo 'GLOBAL.ts'.
 
-## Development server
+## Funcionalidades implementadas
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+1. Busqueda por cliente.
+2. Busqueda por referencia.
+3. Busqueda por usuario (el usuario aparece al sostener el raton durante un segundo encima de los indicadores de advertencia al lado de la cantidad solicitada).
+4. Busqueda por tipo.
+5. Filtrado por estados.
 
-## Code scaffolding
+## Funcionalidades no implementadas
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+1. Filtrado por fecha.
+2. Uso del boton buscar, puesto que para las funcionalidades que hemos implementado, no es necesario, la pagina se recarga automaticamente al cambiar una busqueda.
 
-## Build
+## Mejoras
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+En otras versiones, se podría mejorar la aplicación separando la seccion de filtrado de la del contenedor central (la tabla), siendo así más accesible a la hora de realizar correctivos y evolutivos. En esta ocasión no lo he contemplado, pues no es una sección muy grande.
 
-## Running unit tests
+## Dificultades encontradas
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Me he encontrado con dificultades a la hora de combinar algunos filtros. No poseo mucha experiencia programando filtrados de búsqueda debido a que siempre las he hecho en el backend.
 
-## Running end-to-end tests
+También me he encontrado dificultades para implementar la busqueda por fecha, la cual no funcionaba correctamente, y he decidido finalmente no implementarla la lógica de éstos inputs.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Jesús Díaz Muñoz - 05 de diciembre de 2021.
