@@ -29,4 +29,4 @@ Me he encontrado con dificultades a la hora de combinar algunos filtros. No pose
 También me he encontrado dificultades para implementar la busqueda por fecha, la cual no funcionaba correctamente, y he decidido finalmente no implementarla la lógica de éstos inputs.
 
 
-## Jesús Díaz Muñoz - 05 de diciembre de 2021.
+# Jesús Díaz Muñoz - 05 de diciembre de 2021.
