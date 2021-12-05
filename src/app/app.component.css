@@ -1,0 +1,13 @@
+#sidebar {
+    width: 50vh;
+    height: 100vh;
+    border-right: 1px solid black ;
+    padding: 1vh;
+  }
+
+.box {
+    border: 1px solid grey;
+    border-radius: 5px;
+    padding-left: 1vh;
+    margin-bottom: 3vh;
+}
