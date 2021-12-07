@@ -11,12 +11,11 @@
 2. Busqueda por referencia.
 3. Busqueda por usuario (el usuario aparece al sostener el raton durante un segundo encima de los indicadores de advertencia al lado de la cantidad solicitada).
 4. Busqueda por tipo.
-5. Filtrado por estados.
+5. Busqueda por rango de fecha
 
 ## Funcionalidades no implementadas
 
-1. Filtrado por fecha.
-2. Uso del boton buscar, puesto que para las funcionalidades que hemos implementado, no es necesario, la pagina se recarga automaticamente al cambiar una busqueda.
+1. Filtrado por estado usando checkboxes
 
 ## Mejoras
 
@@ -24,9 +23,8 @@ En otras versiones, se podría mejorar la aplicación separando la seccion de fi
 
 ## Dificultades encontradas
 
-Me he encontrado con dificultades a la hora de combinar algunos filtros. No poseo mucha experiencia programando filtrados de búsqueda debido a que siempre las he hecho en el backend.
+Me he encontrado con dificultades a la hora de detectar qué checkbox esta marcado.
+¿Que he hecho? Bien, en primer lugar, he llamado a la API trayendome en un array todos los estados. En el HTML he hecho un *ngFor por el array y he montado cada estado en un checkbox. El problema me lo he encontrado a la hora de pasar esto a la queryString, pues obtenia el valor del checkbox y siempre obtenía el mismo (el primero de la lista). Solo podia filtrar por estado "Pendiente".
 
-También me he encontrado dificultades para implementar la busqueda por fecha, la cual no funcionaba correctamente, y he decidido finalmente no implementarla la lógica de éstos inputs.
 
-
-# Jesús Díaz Muñoz - 05 de diciembre de 2021.
+# Jesús Díaz Muñoz - 07 de diciembre de 2021.
