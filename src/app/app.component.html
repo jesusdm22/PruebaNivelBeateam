@@ -1,32 +1,32 @@
 <div class="d-flex">
   <!--FILTROS-->
-  <div id="sidebar">
+  <form #busqueda="ngForm"  (ngSubmit)="search(busqueda)" id="sidebar">
     <div class="list-group">
 
       <!-- CLIENTE -->
       <label>Cliente:</label>
       <div class="input-group mb-3">
-        <input type="text" (keyup)="filtroCliente($any($event.target).value)" class="form-control">
+        <input type="text" class="form-control " id="cliente" name="cliente" #cliente ngModel>
         <div class="input-group-append">
-          <button class="btn btn-outline-danger" type="button">X</button>
+          <button class="btn btn-outline-danger clear" type="button" (click)="clear('cliente')">X</button>
         </div>
       </div>
 
       <!-- REFERENCIA -->
       <label>Referencia:</label>
       <div class="input-group mb-3">
-        <input type="text" (keyup)="filtroReferencia($any($event.target).value)" class="form-control">
+        <input type="text" class="form-control" id="referencia" name="referencia" #referencia ngModel>
         <div class="input-group-append">
-          <button class="btn btn-outline-danger" type="button">X</button>
+          <button class="btn btn-outline-danger clear" type="button" (click)="clear('referencia')">X</button>
         </div>
       </div>
 
       <!-- USUARIO -->
       <label>Usuario:</label>
       <div class="input-group mb-3">
-        <input type="text" (keyup)="filtroUsuario($any($event.target).value)" class="form-control">
+        <input type="text" class="form-control" id="usuario" name="usuario" #usuario ngModel>
         <div class="input-group-append">
-          <button class="btn btn-outline-danger" type="button">X</button>
+          <button class="btn btn-outline-danger clear" type="button" (click)="clear('usuario')">X</button>
         </div>
       </div>
 
@@ -34,50 +34,47 @@
       <label>Fecha:</label>
       <div class="input-group mb-3">
         <div >
-          <input type="date" class="form-control">
-          <input type="date" class="form-control">
+          <input type="date" class="form-control" id="fechaInicio" name="fechaInicio" #fechaInicio ngModel>
+          <input type="date" class="form-control" id="fechaFin" name="fechaFin" #fechaFin ngModel>
         </div>
-        
-
         <div class="input-group-append">
-          <button class="btn btn-outline-danger" type="button">X</button>
+          <button class="btn btn-outline-danger clear" type="button" (click)="clear('fechaInicio')">X</button>
         </div>
       </div>
 
       <!-- TIPO -->
       <label>Tipo:</label>
       <div class="input-group mb-3">
-        <select class="custom-select" (change)="filtroTipo($any($event.target).value)">
-          <option selected>Todos</option>
+        <select class="custom-select" name="tipo" #tipo ngModel id="tipo">
+          <option selected value="">Todos</option>
           <option  *ngFor="let tipo of arrayTipos" value="{{tipo}}">{{tipo}}</option>
         </select>
         <div class="input-group-append">
-          <button class="btn btn-outline-danger" type="button">X</button>
+          <button class="btn btn-outline-danger clear" type="button" (click)="clear('tipo')">X</button>
         </div>
       </div>
 
       <!-- ESTADOS -->
       <label>Estados:</label>
       <div class="box">
-
         <div class="form-check" *ngFor="let estado of arrayEstados">
-          <input class="form-check-input" type="checkbox" value="{{estado}}" id="{{estado}}" 
-          (change)="filtroEstado($any($event.target).value, $any($event))">
+          <input class="form-check-input" type="checkbox" id="estado" value="{{estado}}" name="estado" #estado ngModel>
           <label class="form-check-label" for="{{estado}}">
             {{estado}}
           </label>
         </div>
       </div>
-      <button type="button" class="btn btn-outline-primary">Buscar</button>
+      <button type="submit"  class="search">Buscar</button>
     </div>
-  </div>
-
+  </form>
 
 
   <!-- CONTENIDO CENTRAL-->
   <div class="content w-100">
     <nav id="main">
       <div class="container-xl">
+        <hr>
+        <p class="small" *ngIf="status != ''">{{status}}</p>
         <!-- TABLA-->
         <p-table  #dt [value]="arrayTareas" [paginator]="true" [rows]="7">
           <ng-template pTemplate="header">

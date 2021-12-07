@@ -8,6 +8,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {TableModule} from 'primeng/table';
+import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 
 
 @NgModule({
@@ -20,7 +21,9 @@ import {TableModule} from 'primeng/table';
     BrowserAnimationsModule,
     HttpClientModule,
     NgbModule,
-    TableModule
+    TableModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

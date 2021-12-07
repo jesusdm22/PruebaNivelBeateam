@@ -1,9 +1,12 @@
 import { HttpClient } from '@angular/common/http';
 import { Component, PipeTransform, ViewChild } from '@angular/core';
-import { FormControl } from '@angular/forms';
+import { FormControl, NgForm } from '@angular/forms';
 import { ApiService } from './services/api.service';
 import { Table } from 'primeng/table';
 import { PrimeNGConfig } from 'primeng/api';
+import { FormBuilder } from '@angular/forms';
+
+
 
 
 @Component({
@@ -17,23 +20,25 @@ export class AppComponent {
 
   title = 'TestCandidatura';
   arrayTareas: any = [];
-  arrayTareasAux: any = [];
   arrayEstados: any = [];
   arrayTipos: any = [];
-  checkboxes: any = [];
   cols: any[] = [];
   rowCount = 0;
+  status: string;
+
   //Nos traemos la datatable de PrimeNG
   @ViewChild('dt') dt: Table | undefined;
 
 
-  constructor(private _apiService: ApiService) {
+  constructor(private _apiService: ApiService, private _formBuilder: FormBuilder) {
+    this.status = "Todo va bien. No hay errores de conexión";
+    
   }
 
 
   ngOnInit() {
     //Recogemos las tareas
-    this.getTareas();
+    this.getTareas("");
     //Recogemos los estados
     this.getEstados();
     //Recogemos los tipos
@@ -51,15 +56,15 @@ export class AppComponent {
 
 
   //Esta funcion se traera las tareas que hay en la DB
-  getTareas(): any {
-    this._apiService.getTareas().subscribe(
+  getTareas(params): any {
+    this._apiService.getTareas(params).subscribe(
       response => {
         this.arrayTareas = response.data;
         this.rowCount = this.arrayTareas.length;
       },
 
       error => {
-        //Aqui tratamos errores
+        this.status = "No hemos podido recuperar la lista de tareas. Revisa que el servidor esté funcionando y el token sea correcto.";
       }
     );
   }
@@ -91,122 +96,51 @@ export class AppComponent {
     )
   }
 
-  //---------------------------------------------------------
-  // FILTROS ------------------------------------------------
-  //---------------------------------------------------------
-  filtroCliente(texto: string) {
-    //Pasamos el texto a minuscula
-    let textoMinuscula = texto.toLowerCase();
+  //Usaremos los filtros mediante las query string que podemos pasarle a la URL
+  search(busqueda:NgForm):void {
 
-    //Aplicamos el filtro
-    this.arrayTareas = this.arrayTareas.filter((tarea: any) =>
-      //Le indicamos qué propiedad ha de filtrar
-      tarea.alias_cliente.includes(textoMinuscula) || tarea.alias_cliente.toLowerCase().includes(textoMinuscula));
+    //Creamos variables para cada campo. Esto se puede mejorar creando un modelo de datos.
+    let cliente = busqueda.value.cliente;
+    let referencia = busqueda.value.referencia;
+    let usuario = busqueda.value.usuario;
+    let tipo = busqueda.value.tipo;
+    //let estado = (<HTMLInputElement>document.getElementById('estado')).value;
+    let fechaInicio = busqueda.value.fechaInicio;
+    let fechaFin = busqueda.value.fechaFin;
+    
+    let params = "?cliente=" + cliente + 
+                 "&referencia=" + referencia +
+                 "&usuario=" + usuario;
 
-    //Sacamos el total de lineas despues del filtrado
-    this.rowCount = this.arrayTareas.length;
-
-    //Si la busqueda es vacia, por tanto el array queda vacio y sin resultados; 
-    //Lo volvemos a cargar
-    if (this.arrayTareas == "" || textoMinuscula == "") {
-      this.arrayTareas = this.getTareas();
+    //Comprobamos si los filtros de tipo string estan vacios, puesto que dan problemas si los pasamos asi
+    //Primero el tipo. Si NO está vacio, lo agregamos al queryString
+    if(tipo != ""){
+      params+="&tipo[]=" + tipo;
     }
-  }
 
-  filtroReferencia(texto: string) {
-    //Pasamos el texto a minuscula
-    let textoMinuscula = texto.toLowerCase();
-
-    //Aplicamos el filtro
-    this.arrayTareas = this.arrayTareas.filter((tarea: any) =>
-      //Le indicamos qué propiedad ha de filtrar
-      tarea.referencia.includes(textoMinuscula) || tarea.referencia.toLowerCase().includes(textoMinuscula));
-
-    //Sacamos el total de lineas despues del filtrado
-    this.rowCount = this.arrayTareas.length;
-
-    //Si la busqueda es vacia, por tanto el array queda vacio y sin resultados; 
-    //Lo volvemos a cargar
-    if (this.arrayTareas == "" || textoMinuscula == "") {
-      this.arrayTareas = this.getTareas();
+    //Luego las fechas. Si las fechas NO están vacian, agregamos el rango al queryString
+    if(fechaInicio != "" && fechaFin != ""){
+      params += "&fecha[inicio]=" + fechaInicio + "&fecha[fin]=" + fechaFin;
     }
-  }
 
-  filtroUsuario(texto: string) {
-    //Pasamos el texto a minuscula
-    let textoMinuscula = texto.toLowerCase();
+    /*Y por ultimo los estados. Si los check NO están vacios, lo agregamos al queryString
+    if(estado != undefined){
+      params+="&estado[]=" + estado;
+    }*/
 
-    //Aplicamos el filtro
-    this.arrayTareas = this.arrayTareas.filter((tarea: any) =>
-      //Le indicamos qué propiedad ha de filtrar
-      tarea.usuario.toLowerCase().includes(textoMinuscula));
-
-    //Sacamos el total de lineas despues del filtrado
-    this.rowCount = this.arrayTareas.length;
-
-    //Si la busqueda es vacia, por tanto el array queda vacio y sin resultados; 
-    //Lo volvemos a cargar
-    if (this.arrayTareas == "" || textoMinuscula == "") {
-      this.arrayTareas = this.getTareas();
-    }
+    //Por ultimo llamamos al metodo que rellena el array con los datos de la API pasandole los params
+    this.getTareas(params);
   }
 
 
-  filtroTipo(texto: string) {
-    //Pasamos el texto a minuscula
-    let textoMinuscula = texto.toLowerCase();
-
-    //Esta busqueda la haremos si no esta seleccionado el filtro "Todos"
-    if (textoMinuscula != "todos") {
-
-      //LLamamos directamente a la API, pues el método local que hemos construido, re-setea 
-      //"arrayTareas", y nos causará problemas de sobreescritura enla tabla
-      this._apiService.getTareas().subscribe(
-        response => {
-          //Guardamos en un array auxiliar la respuesta de los datos
-          this.arrayTareasAux = response.data;
-          //Aplicamos el filtro sobre la lista auxiliar y lo pasamos a la tabla que se muestra
-          this.arrayTareas = this.arrayTareasAux.filter((tarea: any) =>
-            //Le indicamos qué propiedad tiene que filtrar
-            tarea.tipo.toLowerCase().includes(textoMinuscula));
-          //Sacamos el total de lineas despues del filtrado
-          this.rowCount = this.arrayTareas.length;
-        }
-      );
-    } else {
-      this.arrayTareas = this.getTareas();
+  clear(elemento: string){
+    //Borramos el elemento
+    (<HTMLInputElement>document.getElementById(elemento)).value = "";
+    
+    //Si el elemento era la fecha, borramos la de fin también
+    if(elemento === 'fechaInicio'){
+      (<HTMLInputElement>document.getElementById('fechaFin')).value = "";
     }
-
-  }
-
-
-  filtroEstado(texto: string, evento: any) {
-    //Pasamos el texto a minuscula
-    let textoMinuscula = texto.toLowerCase();
-
-    //Si el checkbox está marcado
-    if (evento.target.checked) {
-      //Guardamos en sesión el checkbox marcado para poder filtrar con varias opciones
-      this.checkboxes.push(texto.toLocaleLowerCase());
-
-      //LLamamos directamente a la API, pues el método local que hemos construido, re-setea 
-      //"arrayTareas", y nos causará problemas de sobreescritura enla tabla
-      this._apiService.getTareas().subscribe(
-        response => {
-          //Guardamos en un array auxiliar la respuesta de los datos
-          this.arrayTareasAux = response.data;
-
-          // Aplicamos el filtro sobre la lista auxiliar y lo pasamos a la tabla que se muestra
-          this.arrayTareas = this.arrayTareasAux.filter((tarea: any) =>
-            //Le indicamos qué propiedad tiene que filtrar
-            tarea.estado.toLowerCase().includes(textoMinuscula));
-          //Sacamos el total de lineas despues del filtrado
-          this.rowCount = this.arrayTareas.length;
-
-        });
-    } else {
-      //Si está desmarcado, eliminamos del array de checkboxes el filtro
-      this.arrayTareas = this.getTareas();
-    }
+    
   }
 }
